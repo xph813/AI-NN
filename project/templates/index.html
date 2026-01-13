@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-right: 1px solid #4a6491;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 15px;
+            color: #ecf0f1;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .document-list {
+            margin-top: 20px;
+        }
+
+        .document-item {
+            background: #34495e;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .document-item:hover {
+            background: #3d566e;
+        }
+
+        .document-item.active {
+            background: #3498db;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 500px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 10px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            margin-left: 20%;
+        }
+
+        .ai-message {
+            background: #f1f8e9;
+            border-left: 4px solid #4caf50;
+            margin-right: 20%;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .input-area input:focus {
+            border-color: #3498db;
+        }
+
+        .input-area button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .input-area button:hover {
+            background: #2980b9;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background: #e3f2fd;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2.5em;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .similarity-analysis {
+            padding: 20px;
+            background: #fff3e0;
+        }
+
+        .similarity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .similarity-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .suggestions {
+            padding: 20px;
+            background: #e8f5e9;
+        }
+
+        .source-tag {
+            display: inline-block;
+            background: #ffeb3b;
+            color: #333;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #4a6491;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-robot"></i> Research Assistant</h1>
+            <p>Analyze PDF research documents, ask questions, and discover insights</p>
+        </header>
+
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-file-pdf"></i>
+                <h3>PDF Analysis</h3>
+                <p>Upload and analyze multiple research PDFs</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-comments"></i>
+                <h3>Q&A System</h3>
+                <p>Ask questions about your research documents</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-search"></i>
+                <h3 style="color: #2c3e50;">Similarity Analysis</h3>
+                <p>Discover connections between research papers</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h3 ><i class="fas fa-book"></i> Documents</h3>
+                <div class="document-list" id="documentList">
+                    <!-- Documents will be loaded here -->
+                </div>
+
+                <div class="similarity-analysis">
+                    <h3 style="color: #1a2a6c;"><i class="fas fa-project-diagram"></i> Similarity Analysis</h3>
+                    <button onclick="analyzeSimilarity()" id="analyzeBtn">Analyze Similarity</button>
+                    <div id="similarityResults"></div>
+                </div>
+
+                <div class="suggestions">
+                    <h3 style="color: #1a2a6c;"><i class="fas fa-lightbulb"></i> Research Suggestions</h3>
+                    <button onclick="getSuggestions()" id="suggestBtn">Get Suggestions</button>
+                    <div id="suggestionResults" style="color: #1a2a6c;"></div>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai-message">
+                        <strong>Research Assistant:</strong> Hello! I'm your research assistant. I've loaded your PDF documents. You can ask me questions about them, and I'll help you analyze and understand the research content.
+                    </div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="userInput" placeholder="Ask a question about the research documents..." onkeypress="handleKeyPress(event)">
+                    <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let documents = [];
+        let currentDocument = null;
+
+        // Load documents when page loads
+        window.onload = function() {
+            loadDocuments();
+        };
+
+        async function loadDocuments() {
+            try {
+                const response = await fetch('/api/documents');
+                documents = await response.json();
+                
+                const container = document.getElementById('documentList');
+                container.innerHTML = '';
+                
+                documents.forEach((doc, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'document-item';
+                    div.innerHTML = `
+                        <strong>${doc.title}</strong>
+                        <small>(${doc.chunk_count} chunks)</small>
+                    `;
+                    div.onclick = () => selectDocument(index);
+                    container.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error loading documents:', error);
+            }
+        }
+
+        function selectDocument(index) {
+            // Remove active class from all items
+            document.querySelectorAll('.document-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            document.querySelectorAll('.document-item')[index].classList.add('active');
+            
+            currentDocument = documents[index];
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const query = input.value.trim();
+            
+            if (!query) return;
+            
+            // Add user message to chat
+            addMessage(query, 'user');
+            input.value = '';
+            
+            // Show loading indicator
+            const loadingMsg = addMessage('Thinking...', 'ai');
+            
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query: query })
+                });
+                
+                const data = await response.json();
+                
+                // Remove loading indicator
+                loadingMsg.remove();
+                
+                if (response.ok) {
+                    addMessage(data.response, 'ai', data.sources);
+                } else {
+                    addMessage(`Error: ${data.error || 'Failed to get response'}`, 'ai');
+                }
+            } catch (error) {
+                // Remove loading indicator
+                loadingMsg.remove();
+                addMessage(`Error: ${error.message}`, 'ai');
+            }
+        }
+
+        function addMessage(content, sender, sources = null) {
+            const chat = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            if (sender === 'ai' && content === 'Thinking...') {
+                messageDiv.innerHTML = `
+                    <strong>Research Assistant:</strong> 
+                    <span class="loading"></span> Thinking...
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <strong>${sender === 'user' ? 'You:' : 'Research Assistant:'}</strong> 
+                    ${content}
+                    ${sources ? `<div class="source-tag">Sources: ${sources.slice(0, 2).join(', ')}</div>` : ''}
+                `;
+            }
+            
+            chat.appendChild(messageDiv);
+            chat.scrollTop = chat.scrollHeight;
+            
+            return messageDiv;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function analyzeSimilarity() {
+            const btn = document.getElementById('analyzeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Analyzing...';
+            
+            try {
+                const response = await fetch('/api/similarity-analysis');
+                const similarities = await response.json();
+                
+                const container = document.getElementById('similarityResults');
+                container.innerHTML = '<h4 style="color:black">Document Similarities:</h4>';
+                
+                const grid = document.createElement('div');
+                grid.className = 'similarity-grid';
+                
+                for (const doc1 in similarities) {
+                    for (const doc2 in similarities[doc1]) {
+                        const item = document.createElement('div');
+                        item.className = 'similarity-item';
+                        
+                        const similarityPercent = Math.round(similarities[doc1][doc2] * 100);
+                        item.innerHTML = `
+                            <strong>${getDocTitle(doc1)}</strong> ↔ <strong>${getDocTitle(doc2)}</strong>
+                            <div>Similarity: ${similarityPercent}%</div>
+                        `;
+                        
+                        grid.appendChild(item);
+                    }
+                }
+                
+                container.appendChild(grid);
+            } catch (error) {
+                console.error('Error analyzing similarity:', error);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Analyze Similarity';
+            }
+        }
+
+        async function getSuggestions() {
+            const btn = document.getElementById('suggestBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Generating...';
+            
+            try {
+                const response = await fetch('/api/research-suggestions');
+                const data = await response.json();
+                
+                const container = document.getElementById('suggestionResults');
+                container.innerHTML = `
+                    <h4>Research Suggestions:</h4>
+                    <div style="white-space: pre-line;color:black">${data.suggestions.replace(/\n/g, '<br>')}</div>
+                `;
+            } catch (error) {
+                console.error('Error getting suggestions:', error);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Get Suggestions';
+            }
+        }
+
+        function getDocTitle(filename) {
+            const doc = documents.find(d => d.filename === filename);
+            return doc ? doc.title : filename;
+        }
+    </script>
+</body>
+</html>
